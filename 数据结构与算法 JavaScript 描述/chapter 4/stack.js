@@ -31,4 +31,8 @@ function Stack() {
     this.top = 0
  }
 
+ Stack.prototype.toString = function () {
+     return this.data
+ }
+
  module.exports = Stack
