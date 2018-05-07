@@ -1,3 +1,12 @@
+/**
+ * 传说在公元1世纪的犹太战争中，犹太历史学家弗拉维奥·约瑟夫斯和他的40个同胞被罗马士兵包围。
+ * 犹太士兵决定宁可自杀也不做俘虏，于是商量出了一个自杀方案。
+ * 他们围成一个圈，从一个人开始，数到第三个人时将第三个人杀死，然后再数，直到杀光所有人。
+ * 约瑟夫和另外一个人决定不参加这个疯狂的游戏，他们快速地计算出了两个位置，站在那里得以幸存。
+ * 写一段程序将 n 个人围成一圈，并且第 m 个人会被杀掉，计算一圈人中哪两个人最后会存活。
+ * 使用循环链表解决该问题
+ */
+
 function Node(element) {
     this.element = element
     this.next = null
@@ -6,7 +15,7 @@ function Node(element) {
 function LinkedList() {
     this.head = new Node('head')
     this.head.next = this.head
-    this.pos = 0
+    this.pos = -1
 }
 
 Object.defineProperty(LinkedList.prototype, 'length', {
@@ -17,7 +26,7 @@ Object.defineProperty(LinkedList.prototype, 'length', {
             currNode = currNode.next
             len++
         }
-        return len - 1
+        return len
     }
 })
 
@@ -27,6 +36,16 @@ LinkedList.prototype.find = function (item) {
         currNode = currNode.next
     }
     return currNode
+}
+
+LinkedList.prototype.indexOf = function (item) {
+    var currNode = this.head
+    var pos = -1
+    while (currNode.element !== item) {
+        pos ++
+        currNode = currNode.next
+    }
+    return pos
 }
 
 LinkedList.prototype.insert = function (newElement, item) {
@@ -56,13 +75,14 @@ LinkedList.prototype.findPrevious = function (item) {
 LinkedList.prototype.remove = function (item) {
     var prevNode = this.findPrevious(item)
     prevNode.next = prevNode.next.next
+    this.pos = this.indexOf(prevNode.element)
 }
 
 LinkedList.prototype.advance = function (n) {
     while (n > 0) {
         this.pos ++
         n --
-        if (this.pos > this.length) {
+        if (this.pos >= this.length) {
             this.pos = 0
         }
     }
@@ -88,16 +108,18 @@ LinkedList.prototype.show = function () {
     return currNode
 }
 
-var llist = new LinkedList()
-llist.insert('U', 'head')
-llist.insert('And', 'U')
-llist.insert('Me', 'And')
-llist.insert('FF', 'head')
+function survive (n, m) {
+    var llist = new LinkedList()
+    llist.insert(1, 'head')
+    for(var i = 1; i < n ; i++){
+        llist.insert(i + 1, i)
+    }
+    while (llist.length > 2){
+        llist.advance(m)
+        llist.remove(llist.show().element)
+    }
+    llist.display()
+}
 
-llist.advance(2)
-console.log(llist.show())
-llist.back(1)
-console.log(llist.show())
-
-
-llist.display()
+survive(10, 3)
+survive(41, 3)
